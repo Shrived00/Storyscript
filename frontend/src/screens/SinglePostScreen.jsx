@@ -1,9 +1,10 @@
 import { Box, Container } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
+
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const SinglePostScreen = () => {
     const { id } = useParams();
@@ -18,7 +19,7 @@ const SinglePostScreen = () => {
             }
             try {
                 console.log('Fetching blog data for ID:', id);
-                const response = await axios.get(`/api/blogs/global/${id}`, config);
+                const response = await axios.get(`${API_BASE_URL}/api/blogs/global/${id}`, config);
 
                 setBlogData(response.data);
             } catch (error) {

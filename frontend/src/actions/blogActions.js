@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { BLOGS_CREATE_FAIL, BLOGS_CREATE_REQUEST, BLOGS_CREATE_SUCCESS, BLOGS_DELETE_FAIL, BLOGS_DELETE_REQUEST, BLOGS_DELETE_SUCCESS, BLOGS_LIST_FAIL, BLOGS_LIST_REQUEST, BLOGS_LIST_SUCCESS, BLOGS_UPDATE_FAIL, BLOGS_UPDATE_REQUEST, BLOGS_UPDATE_SUCCESS } from '../constants/blogConstants'
 
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 export const listBlog = () => async (dispatch, getState) => {
     try {
         dispatch({ type: BLOGS_LIST_REQUEST });
@@ -14,7 +16,7 @@ export const listBlog = () => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.token}`,
             }
         }
-        const { data } = await axios.get(`/api/blogs`, config);
+        const { data } = await axios.get(`${API_BASE_URL}/api/blogs`, config);
         dispatch({
             type: BLOGS_LIST_SUCCESS, payload: data,
         })
@@ -48,7 +50,7 @@ export const createBlog = (title, caption, desc, pic, category) => async (dispat
             },
         };
 
-        const { data } = await axios.post(`/api/blogs/create`, { title, caption, desc, pic, category },
+        const { data } = await axios.post(`${API_BASE_URL}/api/blogs/create`, { title, caption, desc, pic, category },
             config)
 
         dispatch({
@@ -83,7 +85,7 @@ export const updateBlog = (id, title, caption, desc, pic, category) => async (di
             },
         };
 
-        const { data } = await axios.put(`/api/blogs/${id}`, { title, caption, desc, pic, category },
+        const { data } = await axios.put(`${API_BASE_URL}/api/blogs/${id}`, { title, caption, desc, pic, category },
             config)
 
 
@@ -118,7 +120,7 @@ export const deleteBlog = (id) => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.delete(`/api/blogs/${id}`,
+        const { data } = await axios.delete(`${API_BASE_URL}/api/blogs/${id}`,
             config)
 
 
