@@ -14,6 +14,11 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
+//let render run with cron-job
+app.get('/hi', (req, res) => {
+    res.type('text/plain');
+    res.send('lol');
+});
 
 
 
