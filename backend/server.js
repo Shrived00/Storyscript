@@ -16,10 +16,11 @@ app.use(cors());
 
 //let render run with cron-job
 app.get('/hi', (req, res) => {
-    console.log('Successfully === Cron-Job ');
+    console.log('Successfully === Cron-Job');
     res.type('text/plain');
-    res.send('lol');
+    res.status(200).send('lol');
 });
+
 
 
 
