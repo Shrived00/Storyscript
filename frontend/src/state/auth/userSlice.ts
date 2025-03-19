@@ -27,9 +27,6 @@ const initialState: UserState = {
   error: null,
 };
 
-/**
- * Async thunk for user login
- */
 export const loginUser = createAsyncThunk<
   UserInfo,
   { email: string; password: string },

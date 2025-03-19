@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../state/auth/userSlice";
 import { RootState, AppDispatch } from "../state/store";
 import { useNavigate } from "react-router-dom";
+import { GalleryVerticalEnd } from "lucide-react";
+import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 
 const RegisterScreen = () => {
   const [name, setName] = useState<string>("");
@@ -29,61 +33,88 @@ const RegisterScreen = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-4">Sign Up</h2>
-
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Full Name"
-            className="w-full p-2 border rounded mb-2"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full p-2 border rounded mb-2"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-2 border rounded mb-2"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            className="w-full p-2 border rounded mb-4"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-          >
-            Register
-          </button>
-        </form>
-
-        <p className="text-center mt-4">
-          Already have an account?{" "}
-          <a href="/login" className="text-blue-500 hover:underline">
-            Log In
+    <div className="grid min-h-screen lg:grid-cols-2  w-full">
+      <div className="relative hidden bg-muted lg:block">
+        <img
+          src="/hero1.jpeg"
+          alt="Image"
+          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+        />
+      </div>
+      <div className="flex flex-col gap-4 p-6 md:p-10 mx-auto">
+        <div className="flex justify-center gap-2 md:justify-start">
+          <a href="#" className="flex items-center gap-2 font-medium">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <GalleryVerticalEnd className="size-4" />
+            </div>
+            StoryScript.
           </a>
-        </p>
+        </div>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full">
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+              <div className="flex flex-col items-center gap-2 text-center">
+                <h1 className="text-2xl font-bold">Create an account</h1>
+                <p className="text-balance text-sm text-muted-foreground">
+                  Enter your details below to create an account
+                </p>
+              </div>
+              <div className="grid gap-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="John Doe"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </div>
+                <Button type="submit" className="w-full">
+                  Sign Up
+                </Button>
+              </div>
+              <div className="text-center text-sm">
+                Already have an account?{" "}
+                <a href="/login" className="underline underline-offset-4">
+                  Login
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );
