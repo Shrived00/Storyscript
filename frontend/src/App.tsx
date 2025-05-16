@@ -6,6 +6,7 @@ import RegisterScreen from "./screens/RegisterScren";
 import MainScreen from "./screens/MainScreen";
 import GlobalScreen from "./screens/GlobalScreen";
 import SinglePostScreen from "./screens/SinglePostScreen";
+import Navbar from "./components/Navbar";
 
 function App() {
   // const count = useSelector((state: RootState) => state.counter.value);
@@ -14,6 +15,7 @@ function App() {
     <>
       <div className="">
         <BrowserRouter>
+          <Navbar />
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />

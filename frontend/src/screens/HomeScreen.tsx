@@ -15,12 +15,12 @@ const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
 
   const { userInfo, loading, error } = useSelector(
-    (state: RootState) => state.user,
+    (state: RootState) => state.user
   );
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/main");
+      navigate("/global");
     }
   }, [userInfo, navigate]);
 

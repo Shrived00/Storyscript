@@ -14,13 +14,11 @@ const LoginScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { userInfo, loading, error } = useSelector(
-    (state: RootState) => state.user,
-  );
+  const { userInfo } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/main");
+      navigate("/global");
     }
   }, [userInfo, navigate]);
 
