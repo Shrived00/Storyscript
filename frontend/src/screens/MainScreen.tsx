@@ -14,7 +14,7 @@ const MainScreen = () => {
   const navigate = useNavigate();
 
   const { blogs, loading, error } = useSelector(
-    (state: RootState) => state.blogs,
+    (state: RootState) => state.blog
   );
   // const { success: successCreate } = useSelector(
   //   (state: RootState) => state.blogCreate,
@@ -31,7 +31,7 @@ const MainScreen = () => {
 
   useEffect(() => {
     dispatch(listBlog());
-  }, [dispatch, successCreate, successUpdate, successDelete, successProfile]);
+  }, [dispatch]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -78,7 +78,11 @@ const MainScreen = () => {
                     More...
                   </Button>
                   <span>
-                    {blog.createdAt ? blog.createdAt.substring(0, 10) : "N/A"}
+                    {typeof blog.createdAt === "string"
+                      ? blog.createdAt.substring(0, 10)
+                      : blog.createdAt
+                      ? new Date(blog.createdAt).toLocaleDateString()
+                      : "N/A"}
                   </span>
                 </CardFooter>
               </Card>

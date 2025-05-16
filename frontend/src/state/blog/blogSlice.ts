@@ -12,12 +12,13 @@ interface Blog {
   desc: string;
   pic?: string;
   category: string;
+  createdAt: string | Date;
 }
 
 interface BlogState {
   blogs: Blog[];
   globalBlogs: Blog[];
-
+  selectedBlog: Blog | null;
   loading: boolean;
   error: string | null;
 }
@@ -40,12 +41,15 @@ export const globalListBlog = createAsyncThunk<
     const config = { headers: { "Content-Type": "application/json" } };
     const { data } = await axios.get(
       `${API_BASE_URL}/api/blogs/global`,
-      config,
+      config
     );
     return data;
     console.log("api", data);
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || error.message);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+    return rejectWithValue("An unknown error occurred");
   }
 });
 
@@ -65,10 +69,13 @@ export const listBlog = createAsyncThunk<Blog[], void, { state: RootState }>(
       const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
       const { data } = await axios.get(`${API_BASE_URL}/api/blogs`, config);
       return data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || error.message);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || error.message);
+      }
+      return rejectWithValue("An unknown error occurred");
     }
-  },
+  }
 );
 
 // Create Blog
@@ -95,11 +102,14 @@ export const createBlog = createAsyncThunk<
     const { data } = await axios.post(
       `${API_BASE_URL}/api/blogs/create`,
       blogData,
-      config,
+      config
     );
     return data;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || error.message);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+    return rejectWithValue("An unknown error occurred");
   }
 });
 
@@ -129,13 +139,16 @@ export const updateBlog = createAsyncThunk<
       const { data } = await axios.put(
         `${API_BASE_URL}/api/blogs/${id}`,
         blogData,
-        config,
+        config
       );
       return data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || error.message);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || error.message);
+      }
+      return rejectWithValue("An unknown error occurred");
     }
-  },
+  }
 );
 
 // Delete Blog
@@ -161,14 +174,48 @@ export const deleteBlog = createAsyncThunk<
     };
     await axios.delete(`${API_BASE_URL}/api/blogs/${id}`, config);
     return id;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || error.message);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+    return rejectWithValue("An unknown error occurred");
   }
 });
+
+// Get Blog By ID
+export const getBlogById = createAsyncThunk<Blog, string, { state: RootState }>(
+  "blogs/getById",
+  async (id, { rejectWithValue, getState }) => {
+    try {
+      const {
+        user: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userInfo?.token}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${API_BASE_URL}/api/blogs/${id}`,
+        config
+      );
+      return data;
+    }catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+    return rejectWithValue("An unknown error occurred");
+  }
+  }
+);
 
 const initialState: BlogState = {
   blogs: [],
   globalBlogs: [],
+  selectedBlog: null,
   loading: false,
   error: null,
 };
@@ -196,7 +243,7 @@ const blogSlice = createSlice({
       })
       .addCase(updateBlog.fulfilled, (state, action: PayloadAction<Blog>) => {
         const index = state.blogs.findIndex(
-          (blog) => blog._id === action.payload._id,
+          (blog) => blog._id === action.payload._id
         );
         if (index !== -1) state.blogs[index] = action.payload;
       })
@@ -220,6 +267,19 @@ const blogSlice = createSlice({
       .addCase(globalListBlog.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch blogs";
+      })
+      .addCase(getBlogById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.selectedBlog = null;
+      })
+      .addCase(getBlogById.fulfilled, (state, action: PayloadAction<Blog>) => {
+        state.loading = false;
+        state.selectedBlog = action.payload;
+      })
+      .addCase(getBlogById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
