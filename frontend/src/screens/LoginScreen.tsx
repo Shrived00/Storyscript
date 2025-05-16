@@ -27,6 +27,10 @@ const LoginScreen: React.FC = () => {
     dispatch(loginUser({ email, password }));
   };
 
+  const handleTestLogin = () => {
+    dispatch(loginUser({ email: "qwerty@gmail.com", password: "1234" }));
+  };
+
   return (
     <div className="grid min-h-screen lg:grid-cols-2  w-full">
       <div className="relative hidden bg-muted lg:block">
@@ -78,8 +82,19 @@ const LoginScreen: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
+
+                {/* Regular Login Button */}
                 <Button type="submit" className="w-full">
                   Login
+                </Button>
+
+                {/* Test Account Login Button */}
+                <Button
+                  type="button"
+                  onClick={handleTestLogin}
+                  className="w-full bg-primary hover:bg-secondary/90"
+                >
+                  Login as Test Account
                 </Button>
               </div>
               <div className="text-center text-sm">

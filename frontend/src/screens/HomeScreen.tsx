@@ -14,9 +14,7 @@ const HomeScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { userInfo, loading, error } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { userInfo } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (userInfo) {
@@ -29,16 +27,20 @@ const HomeScreen: React.FC = () => {
     dispatch(loginUser({ email, password }));
   };
 
+  const handleTestLogin = () => {
+    dispatch(loginUser({ email: "qwerty@gmail.com", password: "1234" }));
+  };
+
   return (
     <div className="grid min-h-screen lg:grid-cols-2  w-full">
       <div className="relative hidden bg-muted lg:block">
         <img
           src="/hero1.jpeg"
           alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale object-center"
         />
       </div>
-      <div className="flex flex-col gap-4 p-6 md:p-10  mx-auto">
+      <div className="flex flex-col gap-4 p-6 md:p-10 mx-auto  min-w-[70%]  ">
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="#" className="flex items-center gap-2 font-medium">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
@@ -80,8 +82,19 @@ const HomeScreen: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
+
+                {/* Regular Login Button */}
                 <Button type="submit" className="w-full">
                   Login
+                </Button>
+
+                {/* Test Account Login Button */}
+                <Button
+                  type="button"
+                  onClick={handleTestLogin}
+                  className="w-full bg-neutral-200 text-neutral-900 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
+                >
+                  Login as Test Account
                 </Button>
               </div>
               <div className="text-center text-sm">
