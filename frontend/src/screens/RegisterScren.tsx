@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../state/auth/userSlice";
+import { loginUser, registerUser } from "../state/auth/userSlice";
 import { RootState, AppDispatch } from "../state/store";
 import { useNavigate } from "react-router-dom";
 import { GalleryVerticalEnd } from "lucide-react";
@@ -30,6 +30,9 @@ const RegisterScreen = () => {
     if (password === confirmPassword) {
       dispatch(registerUser({ name, email, password }));
     }
+  };
+  const handleTestLogin = () => {
+    dispatch(loginUser({ email: "robertslore@gmail.com", password: "1234" }));
   };
 
   return (
@@ -104,6 +107,14 @@ const RegisterScreen = () => {
                 </div>
                 <Button type="submit" className="w-full">
                   Sign Up
+                </Button>
+                {/* Test Account Login Button */}
+                <Button
+                  type="button"
+                  onClick={handleTestLogin}
+                  className="w-full bg-neutral-900 hover:bg-neutral-900/90"
+                >
+                  Login as Test Account
                 </Button>
               </div>
               <div className="text-center text-sm">

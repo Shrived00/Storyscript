@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Card } from "../components/ui/card";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 
@@ -30,9 +30,11 @@ const MainScreen = () => {
         <div className="my-4">
           <Button
             onClick={() => navigate("/post")}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 p-6 "
           >
-            <Avatar className="bg-green-500 text-white p-1">+</Avatar>
+            <Avatar className="bg-green-500 text-white  flex justify-center items-center">
+              <Plus className="h-4 w-4" />
+            </Avatar>
             Create New Blog
           </Button>
         </div>
