@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { AppDispatch, RootState } from "../state/store";
-import { getProfile } from "../state/profile/profileSlice";
+import { getProfile, editProfile } from "../state/profile/profileSlice";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ArrowLeft, Briefcase, GraduationCap, Code, User } from "lucide-react";
@@ -15,10 +15,21 @@ const MyProfileScreen: React.FC = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
 
-  const { loading, error, profile } = useSelector(
+  const { loading, error, profile, updateLoading, updateError } = useSelector(
     (state: RootState) => state.profile
   );
-  const { userInfo } = useSelector((state: RootState) => state.user); // assuming `auth` slice
+  const { userInfo } = useSelector((state: RootState) => state.user);
+
+  const [editMode, setEditMode] = useState(false);
+  const [editableProfile, setEditableProfile] = useState({
+    name: "",
+    career: "",
+    bio: "",
+    work: "",
+    education: "",
+    skill: "",
+    prof_pic: "",
+  });
 
   useEffect(() => {
     if (userId) {
@@ -27,18 +38,23 @@ const MyProfileScreen: React.FC = () => {
   }, [dispatch, userId]);
 
   useEffect(() => {
-    // If there's an error and the user is viewing *their own* profile
     if (error && userInfo?._id === userId) {
       navigate("/myprofile/create");
     }
   }, [error, userInfo, userId, navigate]);
 
-  if (loading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    if (profile) {
+      setEditableProfile({
+        ...profile,
+        prof_pic: profile.prof_pic || "", // ensure it's a string
+      });
+    }
+  }, [profile]);
+
+  if (loading) return <Loading />;
 
   if (error) {
-    // Show error only if it's not the logged-in user's profile
     return (
       <div className="min-h-screen bg-[#F5D04E]/10 flex items-center justify-center font-['Figtree_Variable',sans-serif]">
         <Card className="p-6 rounded-2xl border border-black shadow-[0.4rem_0.4rem_0_0_#000] max-w-md">
@@ -55,9 +71,28 @@ const MyProfileScreen: React.FC = () => {
     );
   }
 
-  if (!profile) {
-    return null; // edge case
-  }
+  if (!profile) return null;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setEditableProfile({
+      ...editableProfile,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSave = () => {
+    dispatch(editProfile(editableProfile))
+      .unwrap()
+      .then(() => {
+        setEditMode(false);
+      })
+      .catch((err) => {
+        console.error("Update failed:", err);
+        // Optionally show error notification
+      });
+  };
 
   return (
     <div className="min-h-screen bg-[#F5D04E]/10 py-10 px-4 font-['Figtree_Variable',sans-serif]">
@@ -77,10 +112,10 @@ const MyProfileScreen: React.FC = () => {
                 <div className="w-[200px] h-[200px] rounded-2xl overflow-hidden border-2 border-black">
                   <img
                     src={
-                      profile.prof_pic ||
+                      editableProfile.prof_pic ||
                       "/placeholder.svg?height=200&width=200"
                     }
-                    alt={profile.name}
+                    alt={editableProfile.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -93,37 +128,80 @@ const MyProfileScreen: React.FC = () => {
                 <div className="inline-block bg-[#F5D04E] px-3 py-1 rounded-full text-sm font-[700] mb-3 shadow-[1px_1px_1px_0_rgba(0,0,0,.2)]">
                   My Profile
                 </div>
-                <h1 className="text-3xl md:text-4xl font-[800] mb-2">
-                  Hi There, I'm {profile.name}
-                </h1>
-                <h2 className="text-xl md:text-2xl font-[700] text-neutral-600 uppercase">
-                  {profile.career}
-                </h2>
+                {editMode ? (
+                  <>
+                    <input
+                      className="text-3xl md:text-4xl font-[800] mb-2 w-full"
+                      name="name"
+                      value={editableProfile.name}
+                      onChange={handleChange}
+                    />
+                    <input
+                      className="text-xl md:text-2xl font-[700] text-neutral-600 uppercase w-full"
+                      name="career"
+                      value={editableProfile.career}
+                      onChange={handleChange}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <h1 className="text-3xl md:text-4xl font-[800] mb-2">
+                      Hi There, I'm {editableProfile.name}
+                    </h1>
+                    <h2 className="text-xl md:text-2xl font-[700] text-neutral-600 uppercase">
+                      {editableProfile.career}
+                    </h2>
+                  </>
+                )}
               </div>
             </div>
 
-            {/* Bio Section */}
+            {/* Sections */}
             <Section title="Bio" icon={<User className="h-4 w-4" />}>
-              {profile.bio}
+              {editMode ? (
+                <textarea
+                  name="bio"
+                  value={editableProfile.bio}
+                  onChange={handleChange}
+                  className="w-full bg-gray-50"
+                />
+              ) : (
+                editableProfile.bio
+              )}
             </Section>
 
-            {/* Work Experience */}
             <Section
               title="Work Experience"
               icon={<Briefcase className="h-4 w-4" />}
             >
-              {profile.work}
+              {editMode ? (
+                <textarea
+                  name="work"
+                  value={editableProfile.work}
+                  onChange={handleChange}
+                  className="w-full bg-gray-50"
+                />
+              ) : (
+                editableProfile.work
+              )}
             </Section>
 
-            {/* Education */}
             <Section
               title="Education"
               icon={<GraduationCap className="h-4 w-4" />}
             >
-              {profile.education}
+              {editMode ? (
+                <textarea
+                  name="education"
+                  value={editableProfile.education}
+                  onChange={handleChange}
+                  className="w-full bg-gray-50"
+                />
+              ) : (
+                editableProfile.education
+              )}
             </Section>
 
-            {/* Skills */}
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-3">
                 <div className="bg-[#F5D04E] p-1 rounded">
@@ -131,26 +209,50 @@ const MyProfileScreen: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-[800]">Skills</h3>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {profile.skill.split(",").map((skill, index) => (
-                  <span
-                    key={index}
-                    className="bg-gray-100 px-3 py-1 rounded-full text-sm font-[600] border border-gray-200"
-                  >
-                    {skill.trim()}
-                  </span>
-                ))}
-              </div>
+              {editMode ? (
+                <input
+                  name="skill"
+                  value={editableProfile.skill}
+                  onChange={handleChange}
+                  className="w-full bg-gray-50 border border-gray-100 p-2 rounded-xl"
+                />
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {editableProfile.skill.split(",").map((skill, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-100 px-3 py-1 rounded-full text-sm font-[600] border border-gray-200"
+                    >
+                      {skill.trim()}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Edit Button */}
-            <div className="mt-8 flex justify-center md:justify-end">
-              <Link to="/edit-profile">
-                <Button className="bg-black hover:bg-gray-800 text-white font-[700] py-2 px-4 rounded-lg transition-colors">
-                  Edit Profile
+            {/* Edit Toggle Button */}
+            {userInfo?._id === userId && (
+              <div className="mt-8 flex justify-center md:justify-end items-center gap-4">
+                <Button
+                  onClick={() => {
+                    if (editMode) {
+                      handleSave();
+                    } else {
+                      setEditMode(true);
+                    }
+                  }}
+                  className="bg-black hover:bg-gray-800 text-white font-[700] py-2 px-4 rounded-lg transition-colors"
+                  disabled={updateLoading}
+                >
+                  {editMode
+                    ? updateLoading
+                      ? "Saving..."
+                      : "Done"
+                    : "Edit Profile"}
                 </Button>
-              </Link>
-            </div>
+                {updateError && <p className="text-red-600">{updateError}</p>}
+              </div>
+            )}
           </div>
         </Card>
       </div>
@@ -173,7 +275,9 @@ const Section = ({
       <h3 className="text-xl font-[800]">{title}</h3>
     </div>
     <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-      <p className="text-neutral-700 whitespace-pre-line">{children}</p>
+      <p className="text-neutral-700 whitespace-pre-line text-left">
+        {children}
+      </p>
     </div>
   </div>
 );

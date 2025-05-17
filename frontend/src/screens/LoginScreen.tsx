@@ -28,7 +28,7 @@ const LoginScreen: React.FC = () => {
   };
 
   const handleTestLogin = () => {
-    dispatch(loginUser({ email: "qwerty@gmail.com", password: "1234" }));
+    dispatch(loginUser({ email: "robertslore@gmail.com", password: "1234" }));
   };
 
   return (

@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
-import ErrorMessage from "../components/ErrorMessage";
 import { AppDispatch, RootState } from "../state/store";
 import { createProfile } from "../state/profile/profileSlice";
+import { ArrowLeft, Upload } from "lucide-react";
+import { Card } from "../components/ui/card";
+import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
+import toast from "react-hot-toast";
 
 const PostProfileScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -24,7 +28,7 @@ const PostProfileScreen: React.FC = () => {
   );
 
   const profileCreate = useSelector((state: RootState) => state.profile);
-  const { loading, error } = profileCreate;
+  const { loading } = profileCreate;
 
   const postDetails = (pics: File) => {
     if (!pics || pics.name === "anonymous-avatar-icon-25.jpg") {
@@ -60,96 +64,137 @@ const PostProfileScreen: React.FC = () => {
       setPicMessage("Please Select an Image");
     }
   };
+  const { userInfo } = useSelector((state: RootState) => state.user);
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !career || !bio || !work || !education || !skill) return;
+
+    if (!name || !career || !bio || !work || !education || !skill) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
 
     dispatch(
       createProfile({ name, career, bio, work, education, skill, prof_pic })
     );
-    navigate("/main");
+
+    toast.success("Profile created successfully!");
+    navigate("/profile/" + userInfo?._id);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded shadow">
+    <div className="min-h-screen bg-[#F5D04E]/10 py-10 px-4 font-['Figtree_Variable',sans-serif]">
+      <div className="container mx-auto max-w-4xl">
         {loading && <Loading />}
-        <div className="flex flex-col items-center">
-          <div className="bg-purple-500 rounded-full w-12 h-12 flex items-center justify-center text-white text-lg font-bold">
-            +
+
+        <Link
+          to="/main"
+          className="inline-flex items-center mb-6 text-sm font-[700] text-blue-600 hover:text-blue-800"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to blogs
+        </Link>
+
+        <Card className="rounded-2xl border border-black shadow-[0.4rem_0.4rem_0_0_#000] overflow-hidden bg-white">
+          <div className="p-6 md:p-8">
+            <div className="flex items-center justify-center mb-6 flex-col">
+              <div className="bg-[#F5D04E] rounded-full p-3 mb-4">
+                <Upload className="h-6 w-6" />
+              </div>
+              <h1 className="text-2xl font-[800]">Edit Profile</h1>
+              <p className="text-neutral-500 text-sm mt-1">
+                Create your new profile
+              </p>
+            </div>
+
+            <form onSubmit={submitHandler} className="space-y-5">
+              <div className="space-y-2">
+                <Label className="font-[600] text-sm">Name</Label>
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                  placeholder="Name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="font-[600] text-sm">Career</Label>
+                <Input
+                  required
+                  value={career}
+                  onChange={(e) => setCareer(e.target.value)}
+                  className="rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                  placeholder="Career"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="font-[600] text-sm">Bio</Label>
+                <Input
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  className="rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                  placeholder="Bio"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="font-[600] text-sm">Work Experience</Label>
+                <Input
+                  value={work}
+                  onChange={(e) => setWork(e.target.value)}
+                  className="rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                  placeholder="Work Experience"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="font-[600] text-sm">Education</Label>
+                <Input
+                  value={education}
+                  onChange={(e) => setEducation(e.target.value)}
+                  className="rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                  placeholder="Education"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="font-[600] text-sm">Skill</Label>
+                <Input
+                  value={skill}
+                  onChange={(e) => setSkill(e.target.value)}
+                  className="rounded-lg border-gray-300 focus:border-black focus:ring-black"
+                  placeholder="Skill"
+                />
+              </div>
+
+              {picMessage && (
+                <p className="text-red-500 text-sm">{picMessage}</p>
+              )}
+
+              <div className="space-y-2">
+                <Label className="font-[600] text-sm">Profile Picture</Label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    e.target.files && postDetails(e.target.files[0])
+                  }
+                  className="rounded-lg border-gray-300 focus:border-black focus:ring-black text-sm"
+                />
+              </div>
+
+              <div className="flex space-x-2">
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
           </div>
-          <h2 className="mt-6 text-center text-2xl font-extrabold text-gray-900">
-            Edit Post
-          </h2>
-        </div>
-        <form onSubmit={submitHandler} className="space-y-4">
-          <input
-            type="text"
-            required
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-          <input
-            type="text"
-            required
-            placeholder="Career"
-            value={career}
-            onChange={(e) => setCareer(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-          <input
-            type="text"
-            placeholder="Bio"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-          <input
-            type="text"
-            placeholder="Work Experience"
-            value={work}
-            onChange={(e) => setWork(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-          <input
-            type="text"
-            placeholder="Education"
-            value={education}
-            onChange={(e) => setEducation(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-          <input
-            type="text"
-            placeholder="Skill"
-            value={skill}
-            onChange={(e) => setSkill(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-          {picMessage && <p className="text-red-500 text-sm">{picMessage}</p>}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => e.target.files && postDetails(e.target.files[0])}
-            className="w-full text-sm"
-          />
-          <div className="flex space-x-2">
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Update
-            </button>
-            <button
-              type="button"
-              className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-            >
-              Delete
-            </button>
-          </div>
-        </form>
+        </Card>
       </div>
     </div>
   );
