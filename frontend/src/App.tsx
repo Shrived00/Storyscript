@@ -9,6 +9,8 @@ import SinglePostScreen from "./screens/SinglePostScreen";
 import Navbar from "./components/Navbar";
 import PostScreen from "./screens/PostScreen";
 import EditScreen from "./screens/EditScreen";
+import PostProflieScreen from "./screens/PostProflieScreen";
+import MyProfileScreen from "./screens/MyProfileScreen";
 
 function App() {
   // const count = useSelector((state: RootState) => state.counter.value);
@@ -27,14 +29,8 @@ function App() {
             <Route path="/blog/:id" element={<SinglePostScreen />} />
             <Route path="/post" element={<PostScreen />} />
             <Route path="/edit/:id" element={<EditScreen />} />
-            {/* 
-        
-            <Route path="/myprofile" element={<MyProfileScreen />} exact />
-            <Route
-              path="/myprofile/create"
-              element={<PostProflieScreen />}
-              exact
-            /> */}
+            <Route path="/myprofile/create" element={<PostProflieScreen />} />
+            <Route path="/profile/:userId" element={<MyProfileScreen />} />
           </Routes>
         </BrowserRouter>
       </div>

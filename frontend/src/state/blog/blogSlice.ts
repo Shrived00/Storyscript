@@ -13,6 +13,7 @@ interface Blog {
   pic?: string;
   category: string;
   createdAt: string | Date;
+  authorName?: string;
 }
 
 interface BlogState {
@@ -30,6 +31,7 @@ interface BlogRequest {
   desc: string;
   pic?: string;
   category: string;
+  authorName?: string;
 }
 
 export const globalListBlog = createAsyncThunk<

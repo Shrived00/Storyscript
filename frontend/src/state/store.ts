@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./auth/userSlice";
 import blogReducer from "./blog/blogSlice";
+import profileReducer from "./profile/profileSlice";
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo")!)
@@ -18,6 +19,7 @@ export const store = configureStore({
   reducer: {
     user: userReducer,
     blog: blogReducer,
+    profile: profileReducer 
   },
   preloadedState,
 });

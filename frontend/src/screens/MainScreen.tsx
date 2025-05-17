@@ -5,7 +5,7 @@ import { listBlog } from "../state/blog/blogSlice";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "../components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Card } from "../components/ui/card";
 import { ArrowUpRight } from "lucide-react";
 import Loading from "../components/Loading";
@@ -89,13 +89,18 @@ const MainScreen = () => {
 
                   <div className="flex items-center gap-3 mt-auto pt-2">
                     <Avatar className="size-7">
-                      <AvatarImage
+                      {/* <AvatarImage
                         src="https://github.com/shadcn.png"
                         alt="@shadcn"
-                      />
-                      <AvatarFallback>CN</AvatarFallback>
+                      /> */}
+                      <AvatarFallback>
+                        {blog.authorName?.trim().slice(0, 2).toUpperCase() ||
+                          "RU"}
+                      </AvatarFallback>
                     </Avatar>
-                    <div className="text-sm font-[800]">username</div>
+                    <div className="text-sm font-[800]">
+                      {blog.authorName?.trim() || "RandomUser"}
+                    </div>
                   </div>
 
                   {/* Edit Button */}

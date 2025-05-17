@@ -18,11 +18,12 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.clear();
+
     dispatch(logout());
     toast.success("Logged out successfully");
     navigate("/global");
   };
-
+  console.log(userInfo);
   return (
     <nav className="bg-white border-b border-black shadow-[0_0.4rem_0_0_#000] sticky top-0 z-50">
       <div className="max-w-[1440px] container mx-auto px-4 py-3 flex items-center justify-between">
@@ -31,22 +32,27 @@ const Navbar: React.FC = () => {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link
-            to="/main"
-            className="text-sm font-[700] text-black hover:text-primary transition-colors"
-          >
-            MyPosts
-          </Link>
-
-          <Link
-            to="/post"
-            className="text-sm font-[700] text-black hover:text-primary transition-colors"
-          >
-            Write
-          </Link>
-
           {userInfo && (
             <>
+              <Link
+                to={`/profile/${userInfo._id}`}
+                className="text-sm font-[700] text-black hover:text-primary transition-colors"
+              >
+                MyProfile
+              </Link>
+              <Link
+                to="/main"
+                className="text-sm font-[700] text-black hover:text-primary transition-colors"
+              >
+                MyPosts
+              </Link>
+
+              <Link
+                to="/post"
+                className="text-sm font-[700] text-black hover:text-primary transition-colors"
+              >
+                Write
+              </Link>
               <div className="flex items-center gap-2 border rounded-sm px-2 bg-muted">
                 <span className="text-sm font-[800]">{userInfo.name}</span>
               </div>

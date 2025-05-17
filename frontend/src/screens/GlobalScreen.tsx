@@ -7,7 +7,7 @@ import { globalListBlog } from "../state/blog/blogSlice";
 import type { AppDispatch, RootState } from "../state/store";
 import { Link, useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { ArrowUpRight } from "lucide-react";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
@@ -86,15 +86,21 @@ const GlobalScreen: React.FC = () => {
                     </p>
 
                     <div className="flex items-center gap-3 mt-auto pt-2">
-                      <Avatar className="size-7">
-                        <AvatarImage
+                      <Avatar className="size-7 text-xs ">
+                        {/* <AvatarImage
                           src="https://github.com/shadcn.png"
                           alt="@shadcn"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
+                        /> */}
+
+                        <AvatarFallback>
+                          {blog.authorName?.trim().slice(0, 2).toUpperCase() ||
+                            "RU"}
+                        </AvatarFallback>
                       </Avatar>
-                      {/* <div className="text-sm font-[800]">{blog._id}</div> */}
-                      <div className="text-sm font-[800]">username</div>
+
+                      <div className="text-sm font-[800]">
+                        {blog.authorName?.trim() || "RandomUser"}
+                      </div>
                     </div>
                   </div>
                 </Card>

@@ -27,6 +27,7 @@ interface BlogRequest {
   desc: string;
   pic: string;
   category: string;
+  authorName: string;
 }
 
 const PostScreen: React.FC = () => {
@@ -92,6 +93,8 @@ const PostScreen: React.FC = () => {
       desc,
       pic,
       category,
+      authorName: JSON.parse(localStorage.getItem("userInfo") || "UnknownUser")
+        .name,
     };
 
     try {
