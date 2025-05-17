@@ -25,10 +25,10 @@ const GlobalScreen: React.FC = () => {
 
   return (
     <div className="bg-[#F5D04E]/10 min-h-screen py-8 font-['Figtree_Variable',sans-serif]">
-      <div className="container mx-auto px-4">
+      <div className="max-w-[1440px] mx-auto ">
         {loading && <Loading />}
         {error && <ErrorMessage message={error} />}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="   px-4   grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {blogs
             ?.slice()
             .reverse()

@@ -44,7 +44,6 @@ export const globalListBlog = createAsyncThunk<
       config
     );
     return data;
-    console.log("api", data);
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -255,7 +254,7 @@ const blogSlice = createSlice({
         state.loading = true;
       })
       .addCase(globalListBlog.fulfilled, (state, action) => {
-        console.log("✅ Redux Action Payload:", action.payload); // ✅ Debugging step
+        console.log("✅ Redux Action Payload Global List Fetched:", action.payload); // ✅ Debugging step
         if (Array.isArray(action.payload)) {
           state.blogs = action.payload; //  Ensure data is assigned
         } else {

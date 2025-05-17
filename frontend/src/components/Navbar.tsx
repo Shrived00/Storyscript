@@ -10,22 +10,22 @@ const Navbar: React.FC = () => {
   const { userInfo } = useSelector((state: RootState) => state.user);
 
   return (
-    <nav className="bg-white border-b border-black shadow-[0.0rem_0.4rem_0_0_#000] sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+    <nav className=" bg-white border-b border-black shadow-[0.0rem_0.4rem_0_0_#000] sticky top-0 z-50">
+      <div className="max-w-[1440px] border container mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="text-xl font-[900] tracking-tight text-black">
-          Blogify
+          StoryScript
         </Link>
 
         <div className="flex items-center gap-4">
           <Link
-            to="/"
+            to="/main"
             className="text-sm font-[700] text-black hover:text-primary transition-colors"
           >
-            Home
+            MyPosts
           </Link>
 
           <Link
-            to="/create"
+            to="/post"
             className="text-sm font-[700] text-black hover:text-primary transition-colors"
           >
             Write
