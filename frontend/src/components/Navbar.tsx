@@ -1,17 +1,31 @@
+// Navbar.tsx
+
 "use client";
 
-import type React from "react";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import type { RootState } from "../state/store";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Menu } from "lucide-react";
+import { toast } from "react-hot-toast";
+import type { RootState } from "../state/store";
+import { logout } from "../state/auth/userSlice";
 
 const Navbar: React.FC = () => {
+  const dispatch = useDispatch();
+
   const { userInfo } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    dispatch(logout());
+    toast.success("Logged out successfully");
+    navigate("/global");
+  };
 
   return (
-    <nav className=" bg-white border-b border-black shadow-[0.0rem_0.4rem_0_0_#000] sticky top-0 z-50">
-      <div className="max-w-[1440px] border container mx-auto px-4 py-3 flex items-center justify-between">
+    <nav className="bg-white border-b border-black shadow-[0_0.4rem_0_0_#000] sticky top-0 z-50">
+      <div className="max-w-[1440px] container mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="text-xl font-[900] tracking-tight text-black">
           StoryScript
         </Link>
@@ -32,9 +46,17 @@ const Navbar: React.FC = () => {
           </Link>
 
           {userInfo && (
-            <div className="flex items-center gap-2 border rounded-sm px-2 bg-muted">
-              <span className="text-sm font-[800]">{userInfo.name}</span>
-            </div>
+            <>
+              <div className="flex items-center gap-2 border rounded-sm px-2 bg-muted">
+                <span className="text-sm font-[800]">{userInfo.name}</span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="text-sm font-[700] text-red-600 hover:text-red-800 transition-colors"
+              >
+                Logout
+              </button>
+            </>
           )}
 
           {/* Optional: Hamburger for mobile */}

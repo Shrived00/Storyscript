@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { globalListBlog } from "../state/blog/blogSlice";
 import type { AppDispatch, RootState } from "../state/store";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { ArrowUpRight } from "lucide-react";
@@ -14,14 +14,20 @@ import ErrorMessage from "../components/ErrorMessage";
 
 const GlobalScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const { blogs, loading, error } = useSelector(
     (state: RootState) => state.blog
   );
+  const { userInfo } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    dispatch(globalListBlog());
-  }, [dispatch]);
+    if (!userInfo) {
+      navigate("/"); // redirect to homepage if no user logged in
+    } else {
+      dispatch(globalListBlog());
+    }
+  }, [dispatch, userInfo, navigate]);
 
   return (
     <div className="bg-[#F5D04E]/10 min-h-screen py-8 font-['Figtree_Variable',sans-serif]">
