@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import type React from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../state/auth/userSlice";
-import { RootState, AppDispatch } from "../state/store";
-import { useNavigate } from "react-router-dom";
-import { GalleryVerticalEnd } from "lucide-react";
+import type { RootState, AppDispatch } from "../state/store";
+import { useNavigate, Link } from "react-router-dom";
+import { GalleryVerticalEnd, LogIn, ArrowRight } from "lucide-react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
+import loginLottie from "../assets/login.json";
+import Lottie from "lottie-react";
 
 const HomeScreen: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -14,7 +20,9 @@ const HomeScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { userInfo } = useSelector((state: RootState) => state.user);
+  const { userInfo, loading, error } = useSelector(
+    (state: RootState) => state.user
+  );
 
   useEffect(() => {
     if (userInfo) {
@@ -32,35 +40,50 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2  w-full">
-      <div className="relative hidden bg-muted lg:block">
-        <img
-          src="/hero1.jpeg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale object-center"
-        />
-      </div>
-      <div className="flex flex-col gap-4 p-6 md:p-10 mx-auto  min-w-[70%]  ">
-        <div className="flex justify-center gap-2 md:justify-start">
-          <a href="#" className="flex items-center gap-2 font-medium">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <GalleryVerticalEnd className="size-4" />
-            </div>
-            StoryScript.
-          </a>
-        </div>
-        <div className="flex flex-1 items-center justify-center">
-          <div className="w-full">
-            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-              <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Login to your account</h1>
-                <p className="text-balance text-sm text-muted-foreground">
-                  Enter your email below to login to your account
+    <div className="min-h-[calc(100vh-54px)] bg-[#F5D04E]/10 font-['Figtree_Variable',sans-serif] flex items-center">
+      <div className="container mx-auto py-8 px-3">
+        <Card className="rounded-2xl border border-black shadow-[0.4rem_0.4rem_0_0_#000] overflow-hidden bg-white max-w-3xl mx-auto">
+          <div className="grid md:grid-cols-2">
+            {/* Left Column - Animation */}
+            <div className=" p-8 flex flex-col items-center justify-center">
+              <div className="mb-4 text-center">
+                <div className="bg-[#F5D04E] rounded-full p-3 mb-4 mx-auto inline-flex">
+                  <GalleryVerticalEnd className="h-6 w-6" />
+                </div>
+                <h2 className="text-xl font-[800] mb-1">StoryScript</h2>
+                <p className="text-neutral-600 text-sm">
+                  Share your stories with the world
                 </p>
               </div>
-              <div className="grid gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+              <div className="hidden md:block">
+                <Lottie
+                  animationData={loginLottie}
+                  loop
+                  className="w-full h-[250px]"
+                />
+              </div>
+            </div>
+
+            {/* Right Column - Form */}
+            <div className="p-6 md:p-8">
+              <h1 className="text-2xl font-[800] text-center mb-2">
+                Welcome back
+              </h1>
+              <p className="text-neutral-500 text-center text-sm mb-6">
+                Login to your account
+              </p>
+
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-3 mb-6 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="font-[600] text-sm">
+                    Email
+                  </Label>
                   <Input
                     id="email"
                     type="email"
@@ -68,11 +91,21 @@ const HomeScreen: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="rounded-lg border-gray-300 focus:border-black focus:ring-black"
                   />
                 </div>
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password" className="font-[600] text-sm">
+                      Password
+                    </Label>
+                    <a
+                      href="#"
+                      className="text-xs text-blue-600 hover:text-blue-800"
+                    >
+                      Forgot password?
+                    </a>
                   </div>
                   <Input
                     id="password"
@@ -80,32 +113,80 @@ const HomeScreen: React.FC = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className="rounded-lg border-gray-300 focus:border-black focus:ring-black"
                   />
                 </div>
 
-                {/* Regular Login Button */}
-                <Button type="submit" className="w-full">
-                  Login
+                <Button
+                  type="submit"
+                  className="w-full bg-black hover:bg-gray-800 text-white font-[700] py-2 rounded-lg transition-colors h-10"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <span className="flex items-center justify-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Logging in...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center">
+                      Login <ArrowRight className="ml-2 h-4 w-4" />
+                    </span>
+                  )}
                 </Button>
+
+                {/* Divider */}
+                <div className="relative my-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-neutral-500">Or</span>
+                  </div>
+                </div>
 
                 {/* Test Account Login Button */}
                 <Button
                   type="button"
                   onClick={handleTestLogin}
-                  className="w-full bg-neutral-200 text-neutral-900 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
+                  className="w-full bg-white border border-black hover:bg-gray-50 text-black font-[700] py-2 rounded-lg transition-colors flex items-center justify-center gap-2 h-10"
+                  variant="outline"
+                  disabled={loading}
                 >
-                  Login as Test Account
+                  <LogIn className="h-4 w-4" /> Login as Test Account
                 </Button>
-              </div>
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <a href="/register" className="underline underline-offset-4">
-                  Sign up
-                </a>
-              </div>
-            </form>
+
+                <div className="text-center text-sm font-[600] mt-4">
+                  Don&apos;t have an account?{" "}
+                  <Link
+                    to="/register"
+                    className="text-blue-600 hover:text-blue-800 underline underline-offset-4"
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

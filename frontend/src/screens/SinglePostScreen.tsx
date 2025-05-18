@@ -1,6 +1,6 @@
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getBlogById } from "../state/blog/blogSlice";
 import type { RootState, AppDispatch } from "../state/store";
@@ -15,11 +15,19 @@ const SinglePostScreen: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const contentRef = useRef<HTMLDivElement>(null);
+  const [ready, setReady] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { selectedBlog, loading, error } = useSelector(
     (state: RootState) => state.blog
   );
-  const [ready, setReady] = useState(false);
+  const { userInfo } = useSelector((state: RootState) => state.user);
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login", { state: { from: location.pathname } });
+    }
+  }, [userInfo, navigate, location]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -51,6 +59,18 @@ const SinglePostScreen: React.FC = () => {
     [0, 0.25],
     ["0px", "0px"]
   );
+  const postUrl = selectedBlog?._id
+    ? `https://storyscript.vercel.app/blog/${selectedBlog._id}`
+    : "https://storyscript.vercel.app/"; // fallback or homepage
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(postUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   if (loading) return <Loading />;
 
@@ -140,7 +160,13 @@ const SinglePostScreen: React.FC = () => {
                 </Avatar>
                 <div>
                   <div className="text-sm font-[800]">
-                    Author ID: {selectedBlog._id}
+                    Author ID:{" "}
+                    <Link
+                      to={`/profile/${selectedBlog.user}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {selectedBlog.authorName || "Random User"}
+                    </Link>
                   </div>
                   <div className="text-xs text-neutral-500 text-left">
                     5 min read
@@ -194,31 +220,19 @@ const SinglePostScreen: React.FC = () => {
             <div className="mt-10 pt-6 border-t border-gray-200">
               <h3 className="text-lg font-[800] mb-3">Share this article</h3>
               <div className="flex gap-3">
-                {/* Placeholder for share buttons */}
+                {/* Twitter */}
                 <motion.button
+                  onClick={() =>
+                    window.open(
+                      `https://twitter.com/intent/tweet?text=Check out this article!&url=${postUrl}`,
+                      "_blank"
+                    )
+                  }
                   className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                  </svg>
-                </motion.button>
-                <motion.button
-                  className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
+                  {/* Twitter Icon */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -233,11 +247,20 @@ const SinglePostScreen: React.FC = () => {
                     <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
                   </svg>
                 </motion.button>
+
+                {/* Facebook */}
                 <motion.button
+                  onClick={() =>
+                    window.open(
+                      `https://www.facebook.com/sharer/sharer.php?u=${postUrl}`,
+                      "_blank"
+                    )
+                  }
                   className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
+                  {/* Facebook Icon */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -249,10 +272,45 @@ const SinglePostScreen: React.FC = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                    <rect x="2" y="9" width="4" height="12"></rect>
-                    <circle cx="4" cy="4" r="2"></circle>
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                   </svg>
+                </motion.button>
+                {/* Copy to Clipboard */}
+                <motion.button
+                  onClick={handleCopy}
+                  className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  aria-label="Copy post URL"
+                >
+                  {copied ? (
+                    <span className="text-green-600 font-semibold text-sm">
+                      Copied!
+                    </span>
+                  ) : (
+                    // Clipboard icon SVG
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect
+                        x="9"
+                        y="9"
+                        width="13"
+                        height="13"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  )}
                 </motion.button>
               </div>
             </div>

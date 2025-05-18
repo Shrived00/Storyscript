@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -9,6 +7,7 @@ import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ArrowLeft, Briefcase, GraduationCap, Code, User } from "lucide-react";
 import Loading from "../components/Loading";
+import toast from "react-hot-toast";
 
 const MyProfileScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -87,6 +86,7 @@ const MyProfileScreen: React.FC = () => {
       .unwrap()
       .then(() => {
         setEditMode(false);
+        toast.success("Profile updated successfully!");
       })
       .catch((err) => {
         console.error("Update failed:", err);

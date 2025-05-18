@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Card } from "../components/ui/card";
-import { ArrowUpRight, Plus } from "lucide-react";
+import { ArrowUpRight, Pencil, Plus } from "lucide-react";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 
@@ -106,11 +106,13 @@ const MainScreen = () => {
                   </div>
 
                   {/* Edit Button */}
-                  <div className="mt-4">
+                  <div className="mt-4 text-left  ">
                     <Button
                       variant="outline"
                       onClick={() => navigate(`/edit/${blog._id}`)}
+                      className="flex items-center gap-2 bg-black/20"
                     >
+                      <Pencil className="w-4 h-4" />
                       Edit
                     </Button>
                   </div>
