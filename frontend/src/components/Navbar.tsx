@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Menu } from "lucide-react";
 import { toast } from "react-hot-toast";
 import type { RootState } from "../state/store";
 import { logout } from "../state/auth/userSlice";
@@ -78,11 +77,6 @@ const Navbar: React.FC = () => {
               </DropdownMenu>
             </>
           )}
-
-          {/* Optional: Hamburger for mobile */}
-          <button className="sm:hidden text-black hover:text-primary">
-            <Menu className="h-5 w-5" />
-          </button>
         </div>
       </div>
     </nav>
