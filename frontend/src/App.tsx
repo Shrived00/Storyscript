@@ -13,8 +13,6 @@ import PostProflieScreen from "./screens/PostProflieScreen";
 import MyProfileScreen from "./screens/MyProfileScreen";
 
 function App() {
-  // const count = useSelector((state: RootState) => state.counter.value);
-  // const dispatch = useDispatch<AppDispatch>();
   return (
     <>
       <div className="">
